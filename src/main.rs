@@ -3,6 +3,7 @@ mod install;
 mod new;
 mod parse_args;
 mod settings;
+mod test;
 mod uninstall;
 mod utils;
 

@@ -1,10 +1,9 @@
 use crate::{Error::SdmwError, Result};
-use filey::Filey;
 use serde::{Deserialize, Serialize};
 use std::{fs::File, path::Path};
 
 /// Setting
-#[derive(Debug, Default, Serialize, Deserialize, Clone)]
+#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Settings {
     path: Vec<String>,
 }
@@ -40,13 +39,5 @@ impl Settings {
         .map_err(|e| e.into())
         .map_err(SdmwError)?;
         Ok(())
-    }
-
-    /// Remove a file from Settings.
-    pub fn remove<P: AsRef<Path>>(&mut self, path: P) -> &mut Self {
-        self.path.retain(|p| {
-            Filey::new(p).absolutized().unwrap() != Filey::new(path.as_ref()).absolutized().unwrap()
-        });
-        self
     }
 }
