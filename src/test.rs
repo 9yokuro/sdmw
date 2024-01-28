@@ -52,7 +52,7 @@ mod tests {
 
         let test_repo = format!("{}/test_repo", TEST_DIR);
 
-        new(&vec![test_repo.clone()]).unwrap();
+        new(&vec![test_repo.clone()], false, false).unwrap();
 
         assert!(Path::new(&test_repo).exists());
         assert!(Path::new(&format!("{}/.git", &test_repo)).exists());
@@ -74,7 +74,7 @@ mod tests {
 
         set_current_dir(TEST_DIR).unwrap();
 
-        add(&settings).unwrap();
+        add(&settings, false, false).unwrap();
 
         assert!(Path::new("a.txt").exists());
         assert!(Path::new("b.txt").exists());
@@ -96,7 +96,7 @@ mod tests {
         File::create("a.txt").unwrap();
         File::create("b.txt").unwrap();
 
-        install(&settings).unwrap();
+        install(&settings, false, false).unwrap();
 
         set_current_dir("../").unwrap();
 
@@ -124,7 +124,7 @@ mod tests {
         symlink("a.txt", "../a.txt").unwrap();
         symlink("b.txt", "../b.txt").unwrap();
 
-        uninstall(&settings).unwrap();
+        uninstall(&settings, false, false).unwrap();
 
         set_current_dir("../").unwrap();
 

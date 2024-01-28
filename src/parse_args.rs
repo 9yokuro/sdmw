@@ -6,6 +6,12 @@ use clap::{Parser, Subcommand};
 struct Args {
     #[clap(subcommand)]
     subcommand: Subcommands,
+    /// Do not print log messages.
+    #[clap(short, long)]
+    quiet: bool,
+    /// Print what it would do but not actually change anything.
+    #[clap(short, long)]
+    pretend: bool,
 }
 
 #[derive(Subcommand, Debug)]
@@ -23,10 +29,14 @@ enum Subcommands {
 pub fn parse_args() -> Result<()> {
     let args = Args::parse();
     match args.subcommand {
-        Subcommands::Add => add(&Settings::read("settings.json")?)?,
-        Subcommands::New { path } => new(&path)?,
-        Subcommands::Install => install(&Settings::read("settings.json")?)?,
-        Subcommands::Uninstall => uninstall(&Settings::read("settings.json")?)?,
+        Subcommands::Add => add(&Settings::read("settings.json")?, args.quiet, args.pretend)?,
+        Subcommands::New { path } => new(&path, args.quiet, args.pretend)?,
+        Subcommands::Install => {
+            install(&Settings::read("settings.json")?, args.quiet, args.pretend)?
+        }
+        Subcommands::Uninstall => {
+            uninstall(&Settings::read("settings.json")?, args.quiet, args.pretend)?
+        }
     }
     Ok(())
 }
