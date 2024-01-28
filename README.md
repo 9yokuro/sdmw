@@ -2,6 +2,12 @@
 
 ![workflow_build](https://github.com/p1486/sdmw/actions/workflows/build.yml/badge.svg)
 ![workflow_test](https://github.com/p1486/sdmw/actions/workflows/test.yml/badge.svg)
+![Crates.io Version](https://img.shields.io/crates/v/sdmw)
+
+## v0.2.0
+Add new options.
+- `-q`, `--quiet` - Do not print log messages.
+- `-p`, `--pretend` - Prit what it would do but not actually change anything.
 
 ## Requirements
 - Unix-like operating system
@@ -57,6 +63,8 @@ mv repository_name/.zshrc ~/.zshrc
 ```
 
 ### Options
+- `-q`, `--quiet` - Do not print log messages.
+- `-p`, `--pretend` - Prit what it would do but not actually change anything.
 - `-h`, `--help` - Print help.
 - `-V`, `--version` - Print version.
 
