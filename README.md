@@ -15,7 +15,7 @@ sdmw new new_repository_name && cd new_repository_name
 ```
 
 02. Edit `settings.json`:
-```diff_json
+```diff
 {
     "path": [
 +       "~/.config/alacritty",
@@ -36,7 +36,7 @@ sdmw install
 ```
 
 To restore files:
-```diff_json
+```diff
 {
     "path": [
         "~/.config/alacritty",
