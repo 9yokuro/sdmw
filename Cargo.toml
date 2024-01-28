@@ -1,6 +1,6 @@
 [package]
 name = "sdmw"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "A Simple Dotfiles Manager."
 authors = ["p1486 xzstd099@protonmail.com"]

@@ -9,28 +9,34 @@ use std::{
     process::{Command, Stdio},
 };
 
-pub fn new(path: &Vec<String>) -> Result<()> {
+pub fn new(path: &Vec<String>, quiet: bool, pretend: bool) -> Result<()> {
     for i in path {
-        if Path::new(i).exists() {
+        if !pretend && Path::new(i).exists() {
             show_already_exists_message(i);
             continue;
         }
 
-        if let Err(e) = create_git_repository(i) {
+        if pretend {
+            show_success_message_git(i);
+        } else if let Err(e) = create_git_repository(i) {
             eprintln!("error: {}", e);
-        } else {
+        } else if !quiet {
             show_success_message_git(i);
         }
 
-        if let Err(e) = create_settings(i) {
+        if pretend {
+            show_success_message_file(format!("{}/settings.json", i));
+        } else if let Err(e) = create_settings(i) {
             eprintln!("error: {}", e);
-        } else {
+        } else if !quiet {
             show_success_message_file(format!("{}/settings.json", i));
         }
 
-        if let Err(e) = create_readme(i) {
+        if pretend {
+            show_success_message_file(format!("{}/README.md", i));
+        } else if let Err(e) = create_readme(i) {
             eprintln!("error: {}", e);
-        } else {
+        } else if !quiet {
             show_success_message_file(format!("{}/README.md", i));
         }
     }

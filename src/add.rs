@@ -3,18 +3,24 @@ use colored::Colorize;
 use filey::{self, Error::FileyError, Filey};
 use std::{fmt::Display, path::Path};
 
-pub fn add(settings: &Settings) -> Result<()> {
+pub fn add(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
     for i in settings.path() {
         let file_name = &file_name(i)?;
-        if Path::new(file_name).exists() {
+        if !pretend && Path::new(file_name).exists() {
             continue;
         }
 
+        if pretend {
+            show_success_message(i, file_name)?;
+            continue;
+        }
         if let Err(e) = move_file(i) {
             eprintln!("error: {}", e);
             continue;
         }
-        show_success_message(i, file_name)?;
+        if !quiet {
+            show_success_message(i, file_name)?;
+        }
     }
     Ok(())
 }
