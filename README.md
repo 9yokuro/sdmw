@@ -1,5 +1,10 @@
 # SDMW - A Simple Dotfiles Manager Written in Rust
 
+![workflow](https://github.com/p1486/sdmw/actions/workflows/rust.yml/badge.svg)
+
+## Requirements
+- `git`
+
 ## Installation
 Run the following Cargo command:
 ```
