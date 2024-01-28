@@ -1,8 +1,10 @@
 # SDMW - A Simple Dotfiles Manager Written in Rust
 
-![workflow](https://github.com/p1486/sdmw/actions/workflows/test.yml/badge.svg)
+![workflow_build](https://github.com/p1486/sdmw/actions/workflows/build.yml/badge.svg)
+![workflow_test](https://github.com/p1486/sdmw/actions/workflows/test.yml/badge.svg)
 
 ## Requirements
+- Unix-like operating system
 - installed `git`
 
 ## Installation
