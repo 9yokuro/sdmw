@@ -1,1 +1,1 @@
-#SDMW - A Simple Dotfiles Manager Written in Rust
+# SDMW - A Simple Dotfiles Manager Written in Rust
