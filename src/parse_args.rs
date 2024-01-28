@@ -10,9 +10,13 @@ struct Args {
 
 #[derive(Subcommand, Debug)]
 enum Subcommands {
+    /// Add files to a repository.
     Add,
+    /// Create new repository.
     New { path: Vec<String> },
+    /// Create symbolic links.
     Install,
+    /// Delete symbolic links.
     Uninstall,
 }
 

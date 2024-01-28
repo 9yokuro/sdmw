@@ -50,6 +50,8 @@ mv repository_name/.zshrc ~/.zshrc
 ```
 
 ### Options
+- `-h`, `--help` - Print help.
+- `-V`, `--version` - Print version.
 
 ## License
 This project is licensed under the MIT License and the Apache-2.0 license.
