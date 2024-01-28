@@ -15,11 +15,11 @@ sdmw new new_repository_name && cd new_repository_name
 ```
 
 02. Edit `settings.json`:
-```diff
+```diff_json
 {
     "path": [
-        + "~/.config/alacritty",
-        + "~/.zshrc"
++       "~/.config/alacritty",
++       "~/.zshrc"
     ]
 }
 ```
@@ -36,11 +36,11 @@ sdmw install
 ```
 
 To restore files:
-```diff
+```diff_json
 {
     "path": [
         "~/.config/alacritty",
-        - "~/.zshrc"
+-       "~/.zshrc"
     ]
 }
 ```
