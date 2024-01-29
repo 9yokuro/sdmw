@@ -7,7 +7,13 @@ mod test;
 mod uninstall;
 mod utils;
 
-pub use crate::{add::add, install::install, new::new, settings::Settings, uninstall::uninstall};
+pub use crate::{
+    add::add,
+    install::install,
+    new::new,
+    settings::{Settings, SETTINGS},
+    uninstall::uninstall,
+};
 
 use crate::parse_args::parse_args;
 use std::process::exit;

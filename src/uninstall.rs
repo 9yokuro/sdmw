@@ -5,6 +5,7 @@ use std::{fmt::Display, path::Path};
 pub fn uninstall(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
     for i in settings.path() {
         let symlink = &absolutize(i)?;
+
         if !pretend && !Path::new(symlink).is_symlink() {
             show_skip_deleting_symlink_message(symlink);
             continue;
@@ -14,10 +15,12 @@ pub fn uninstall(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> 
             show_success_message(symlink);
             continue;
         }
+
         if let Err(e) = delete_symlink(symlink) {
             eprintln!("error: {}", e);
             continue;
         }
+
         if !quiet {
             show_success_message(symlink);
         }

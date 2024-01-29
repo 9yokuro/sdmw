@@ -2,6 +2,8 @@ use crate::{Error::SdmwError, Result};
 use serde::{Deserialize, Serialize};
 use std::{fs::File, path::Path};
 
+pub const SETTINGS: &str = "settings.json";
+
 /// Setting
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Settings {

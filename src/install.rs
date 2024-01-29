@@ -6,13 +6,15 @@ use std::{fmt::Display, path::Path};
 pub fn install(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
     for i in settings.path() {
         let symlink = &absolutize(i)?;
+
         if !pretend && Path::new(symlink).exists() {
             show_already_exists_message(symlink);
             continue;
         }
 
-        let original = file_name(symlink)?;
-        if !pretend && !Path::new(&absolutize(&original)?).exists() {
+        let original = &file_name(symlink)?;
+
+        if !pretend && !Path::new(&absolutize(original)?).exists() {
             eprintln!(
                 "error: {}",
                 NotFound {
@@ -21,16 +23,19 @@ pub fn install(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
             );
             continue;
         }
+
         if pretend {
-            show_success_message(&original, symlink);
+            show_success_message(original, symlink);
             continue;
         }
-        if let Err(e) = create_symlink(&original, symlink) {
+
+        if let Err(e) = create_symlink(original, symlink) {
             eprintln!("error: {}", e);
             continue;
         }
+
         if !quiet {
-            show_success_message(&original, symlink);
+            show_success_message(original, symlink);
         }
     }
     Ok(())

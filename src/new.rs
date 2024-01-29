@@ -1,4 +1,4 @@
-use crate::{utils::*, Result, Settings};
+use crate::{utils::*, Result, Settings, SETTINGS};
 use colored::Colorize;
 use std::{
     ffi::OsStr,
@@ -25,11 +25,11 @@ pub fn new(path: &Vec<String>, quiet: bool, pretend: bool) -> Result<()> {
         }
 
         if pretend {
-            show_success_message_file(format!("{}/settings.json", i));
+            show_success_message_file(format!("{}/{}", i, SETTINGS));
         } else if let Err(e) = create_settings(i) {
             eprintln!("error: {}", e);
         } else if !quiet {
-            show_success_message_file(format!("{}/settings.json", i));
+            show_success_message_file(format!("{}/{}", i, SETTINGS));
         }
 
         if pretend {
@@ -60,7 +60,7 @@ fn show_success_message_git<D: Display>(path: D) {
 }
 
 fn create_settings<P: AsRef<Path>>(path: P) -> Result<()> {
-    Settings::new(vec![]).write(format!("{}/settings.json", path.as_ref().to_string_lossy()))
+    Settings::new(vec![]).write(format!("{}/{}", path.as_ref().to_string_lossy(), SETTINGS))
 }
 
 fn create_readme<P: AsRef<Path>>(path: P) -> io::Result<()> {

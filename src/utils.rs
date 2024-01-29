@@ -5,6 +5,7 @@ use crate::{
 use filey::Filey;
 use std::{env, fmt::Display, path::Path};
 
+/// Returns the file name.
 pub fn file_name<P: AsRef<Path>>(path: P) -> Result<String> {
     Ok(Filey::new(path)
         .absolutized()
@@ -34,6 +35,7 @@ pub fn show_skip_deleting_symlink_message<D: Display>(path: D) {
     eprintln!("Skipped");
 }
 
+/// Returns the current directory.
 pub fn current_dir() -> Result<String> {
     Ok(env::current_dir()
         .map_err(|e| e.into())
@@ -42,6 +44,7 @@ pub fn current_dir() -> Result<String> {
         .to_string())
 }
 
+/// Returns the absolute path.
 pub fn absolutize<P: AsRef<Path>>(path: P) -> Result<String> {
     Ok(Filey::new(path)
         .absolutized()
@@ -50,6 +53,7 @@ pub fn absolutize<P: AsRef<Path>>(path: P) -> Result<String> {
         .to_string())
 }
 
-pub fn delete_symlink<P: AsRef<Path>>(path: P) -> filey::Result<()> {
+/// Removes a file or a directory.
+pub fn remove<P: AsRef<Path>>(path: P) -> filey::Result<()> {
     Filey::new(path).remove()
 }
