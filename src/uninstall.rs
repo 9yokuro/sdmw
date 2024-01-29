@@ -16,7 +16,7 @@ pub fn uninstall(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> 
             continue;
         }
 
-        if let Err(e) = delete_symlink(symlink) {
+        if let Err(e) = remove(symlink) {
             eprintln!("error: {}", e);
             continue;
         }
