@@ -1,6 +1,12 @@
 #[cfg(test)]
 mod tests {
-    use crate::{add, install, new, restore, uninstall, utils::*, Settings};
+    use crate::{
+        subcommands::{
+            add::add, install::install, new::new, restore::restore, uninstall::uninstall,
+        },
+        utils::*,
+        Settings,
+    };
     use std::{
         env::set_current_dir,
         fs::{create_dir_all, remove_dir_all, remove_file, File},
