@@ -4,10 +4,8 @@
 ![workflow_test](https://github.com/p1486/sdmw/actions/workflows/test.yml/badge.svg)
 ![Crates.io Version](https://img.shields.io/crates/v/sdmw)
 
-## v0.2.0
-Add new options.
-- `-q`, `--quiet` - Do not print log messages.
-- `-p`, `--pretend` - Prit what it would do but not actually change anything.
+## v0.3.0
+Add a new subcommand "restore".
 
 ## Requirements
 - Unix-like operating system
@@ -24,7 +22,7 @@ Or download prebuilt binary from the [GitHub release page](https://github.com/p1
 
 01. Create a new repository:
 ```
-sdmw new new_repository_name && cd new_repository_name
+sdmw new /path/to/repository && cd /path/to/repository
 ```
 
 02. Edit `settings.json`:
@@ -49,17 +47,8 @@ sdmw install
 ```
 
 To restore files:
-```diff
-{
-    "path": [
-        "~/.config/alacritty",
--       "~/.zshrc"
-    ]
-}
 ```
-and move files to where they came from:
-```
-mv repository_name/.zshrc ~/.zshrc
+cd /path/to/repository && sdmw restore alacritty/
 ```
 
 ### Options
