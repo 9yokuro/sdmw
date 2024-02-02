@@ -1,6 +1,5 @@
 use crate::{utils::*, Result, Settings};
 use colored::Colorize;
-use filey::{self, Error::FileyError, Filey};
 use std::{fmt::Display, path::Path};
 
 pub fn add(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
@@ -16,7 +15,7 @@ pub fn add(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
             continue;
         }
 
-        if let Err(e) = move_file(i) {
+        if let Err(e) = mv(i, &current_dir()?) {
             eprintln!("error: {}", e);
             continue;
         }
@@ -25,13 +24,6 @@ pub fn add(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
             show_success_message(i, file_name)?;
         }
     }
-    Ok(())
-}
-
-fn move_file<P: AsRef<Path>>(path: P) -> filey::Result<()> {
-    Filey::new(path)
-        .absolutized()?
-        .move_to(current_dir().map_err(|e| e.into()).map_err(FileyError)?)?;
     Ok(())
 }
 

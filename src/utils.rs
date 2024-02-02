@@ -55,5 +55,13 @@ pub fn absolutize<P: AsRef<Path>>(path: P) -> Result<String> {
 
 /// Removes a file or a directory.
 pub fn remove<P: AsRef<Path>>(path: P) -> filey::Result<()> {
-    Filey::new(path).remove()
+    Filey::new(path).absolutized()?.remove()
+}
+
+/// Move a file or a directory.
+pub fn mv<P: AsRef<Path>>(from: P, to: P) -> filey::Result<()> {
+    Filey::new(from)
+        .absolutized()?
+        .move_to(Filey::new(to).absolutized()?)?;
+    Ok(())
 }
