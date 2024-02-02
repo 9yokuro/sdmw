@@ -9,36 +9,35 @@ use std::{
     process::{Command, Stdio},
 };
 
-pub fn new(path: &Vec<String>, quiet: bool, pretend: bool) -> Result<()> {
-    println!("A");
-    for i in path {
-        if !pretend && Path::new(i).exists() {
-            show_already_exists_message(i);
+pub fn new(paths: &Vec<String>, quiet: bool, pretend: bool) -> Result<()> {
+    for path in paths {
+        if !pretend && Path::new(path).exists() {
+            print_already_exists(path);
             continue;
         }
 
         if pretend {
-            show_success_message_git(i);
-        } else if let Err(e) = create_git_repository(i) {
+            print_git_log(path);
+        } else if let Err(e) = create_git_repository(path) {
             eprintln!("error: {}", e);
         } else if !quiet {
-            show_success_message_git(i);
+            print_git_log(path);
         }
 
         if pretend {
-            show_success_message_file(format!("{}/{}", i, SETTINGS));
-        } else if let Err(e) = create_settings(i) {
+            print_create_file_log(format!("{}/{}", path, SETTINGS));
+        } else if let Err(e) = create_settings(path) {
             eprintln!("error: {}", e);
         } else if !quiet {
-            show_success_message_file(format!("{}/{}", i, SETTINGS));
+            print_create_file_log(format!("{}/{}", path, SETTINGS));
         }
 
         if pretend {
-            show_success_message_file(format!("{}/README.md", i));
-        } else if let Err(e) = create_readme(i) {
+            print_create_file_log(format!("{}/README.md", path));
+        } else if let Err(e) = create_readme(path) {
             eprintln!("error: {}", e);
         } else if !quiet {
-            show_success_message_file(format!("{}/README.md", i));
+            print_create_file_log(format!("{}/README.md", path));
         }
     }
     Ok(())
@@ -56,7 +55,7 @@ fn create_git_repository<O: AsRef<OsStr>>(path: O) -> io::Result<()> {
     Ok(())
 }
 
-fn show_success_message_git<D: Display>(path: D) {
+fn print_git_log<D: Display>(path: D) {
     eprintln!("{} repository '{}'", "Created".green().bold(), path);
 }
 
@@ -73,6 +72,6 @@ fn create_readme<P: AsRef<Path>>(path: P) -> io::Result<()> {
     Ok(())
 }
 
-fn show_success_message_file<D: Display>(path: D) {
+fn print_create_file_log<D: Display>(path: D) {
     eprintln!("{} {}", "Created".green().bold(), path);
 }

@@ -26,13 +26,13 @@ mod tests {
     }
 
     #[test]
-    fn test_show_already_exists_message() {
-        show_already_exists_message("a.txt");
+    fn test_print_already_exists() {
+        print_already_exists("a.txt");
     }
 
     #[test]
-    fn test_show_skip_deleting_symlink_message() {
-        show_skip_deleting_symlink_message("a.txt");
+    fn test_print_not_a_symlink() {
+        print_not_a_symlink("a.txt");
     }
 
     #[test]
