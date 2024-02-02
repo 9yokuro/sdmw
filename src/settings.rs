@@ -42,4 +42,10 @@ impl Settings {
         .map_err(SdmwError)?;
         Ok(())
     }
+
+    /// Remove an element.
+    pub fn remove(&mut self, path: &String) -> &mut Self {
+        self.path.retain(|p| p != path);
+        self
+    }
 }

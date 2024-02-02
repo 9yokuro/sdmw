@@ -10,6 +10,7 @@ use std::{
 };
 
 pub fn new(path: &Vec<String>, quiet: bool, pretend: bool) -> Result<()> {
+    println!("A");
     for i in path {
         if !pretend && Path::new(i).exists() {
             show_already_exists_message(i);

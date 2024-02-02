@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::{add, install, new, uninstall, utils::*, Settings};
+    use crate::{add, install, new, restore, uninstall, utils::*, Settings};
     use std::{
         env::set_current_dir,
         fs::{create_dir_all, remove_dir_all, remove_file, File},
@@ -102,6 +102,37 @@ mod tests {
 
         assert!(Path::new("a.txt").is_symlink());
         assert!(Path::new("b.txt").is_symlink());
+
+        remove_file("a.txt").unwrap();
+        remove_file("b.txt").unwrap();
+
+        finish_test();
+    }
+
+    #[test]
+    fn test_restore() {
+        prepare_test();
+
+        let mut settings = Settings::new(vec!["../a.txt".to_string(), "../b.txt".to_string()]);
+        settings.write(SETTINGS).unwrap();
+
+        set_current_dir(TEST_DIR).unwrap();
+
+        File::create("a.txt").unwrap();
+        File::create("b.txt").unwrap();
+
+        restore(
+            &mut settings,
+            &vec!["a.txt".to_string(), "b.txt".to_string()],
+            false,
+            false,
+        )
+        .unwrap();
+
+        set_current_dir("../").unwrap();
+
+        assert!(Path::new("a.txt").exists());
+        assert!(Path::new("b.txt").exists());
 
         remove_file("a.txt").unwrap();
         remove_file("b.txt").unwrap();
