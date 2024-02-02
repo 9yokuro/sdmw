@@ -3,37 +3,37 @@ use colored::Colorize;
 use std::{fmt::Display, path::Path};
 
 pub fn add(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
-    for i in settings.path() {
-        let file_name = &file_name(i)?;
+    for path in settings.paths() {
+        let file_name = &file_name(path)?;
 
         if !pretend && Path::new(file_name).exists() {
             continue;
         }
 
         if pretend {
-            show_success_message(i, file_name)?;
+            print_log(path, file_name)?;
             continue;
         }
 
-        if let Err(e) = mv(i, &current_dir()?) {
+        if let Err(e) = rename(path, &current_dir()?) {
             eprintln!("error: {}", e);
             continue;
         }
 
         if !quiet {
-            show_success_message(i, file_name)?;
+            print_log(path, file_name)?;
         }
     }
     Ok(())
 }
 
-fn show_success_message<D: Display>(original: D, file_name: D) -> Result<()> {
+fn print_log<D: Display>(from: D, to: D) -> Result<()> {
     eprintln!(
         "{} '{}' -> '{}/{}'",
         "Add".green().bold(),
-        original,
+        from,
         current_dir()?,
-        file_name
+        to
     );
     Ok(())
 }

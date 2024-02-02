@@ -5,13 +5,8 @@ mod test;
 mod utils;
 
 pub use crate::{
-    add::add,
-    install::install,
-    new::new,
-    restore::restore,
     settings::{Settings, SETTINGS},
     subcommands::*,
-    uninstall::uninstall,
 };
 
 use crate::parse_args::parse_args;

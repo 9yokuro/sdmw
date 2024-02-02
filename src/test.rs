@@ -1,6 +1,12 @@
 #[cfg(test)]
 mod tests {
-    use crate::{add, install, new, restore, uninstall, utils::*, Settings};
+    use crate::{
+        subcommands::{
+            add::add, install::install, new::new, restore::restore, uninstall::uninstall,
+        },
+        utils::*,
+        Settings,
+    };
     use std::{
         env::set_current_dir,
         fs::{create_dir_all, remove_dir_all, remove_file, File},
@@ -26,13 +32,13 @@ mod tests {
     }
 
     #[test]
-    fn test_show_already_exists_message() {
-        show_already_exists_message("a.txt");
+    fn test_print_already_exists() {
+        print_already_exists("a.txt");
     }
 
     #[test]
-    fn test_show_skip_deleting_symlink_message() {
-        show_skip_deleting_symlink_message("a.txt");
+    fn test_print_not_a_symlink() {
+        print_not_a_symlink("a.txt");
     }
 
     #[test]

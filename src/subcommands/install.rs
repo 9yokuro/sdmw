@@ -4,11 +4,11 @@ use filey::{self, Filey};
 use std::{fmt::Display, path::Path};
 
 pub fn install(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
-    for i in settings.path() {
-        let symlink = &absolutize(i)?;
+    for path in settings.paths() {
+        let symlink = &absolutize(path)?;
 
         if !pretend && Path::new(symlink).exists() {
-            show_already_exists_message(symlink);
+            print_already_exists(symlink);
             continue;
         }
 
@@ -25,7 +25,7 @@ pub fn install(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
         }
 
         if pretend {
-            show_success_message(original, symlink);
+            print_log(original, symlink);
             continue;
         }
 
@@ -35,17 +35,19 @@ pub fn install(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
         }
 
         if !quiet {
-            show_success_message(original, symlink);
+            print_log(original, symlink);
         }
     }
     Ok(())
 }
 
 fn create_symlink<P: AsRef<Path>>(original: P, symlink: P) -> filey::Result<()> {
-    Filey::new(original).symlink(Filey::new(symlink).absolutized()?)
+    Filey::new(original)
+        .absolutized()?
+        .symlink(Filey::new(symlink).absolutized()?)
 }
 
-fn show_success_message<D: Display>(original: D, symlink: D) {
+fn print_log<D: Display>(original: D, symlink: D) {
     eprintln!(
         "{} symlink '{}' -> '{}'",
         "Created".green().bold(),

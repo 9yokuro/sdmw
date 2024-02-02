@@ -1,8 +1,18 @@
-use crate::{add, install, new, restore, uninstall, Result, Settings, SETTINGS};
+use crate::{
+    subcommands::{add::add, install::install, new::new, restore::restore, uninstall::uninstall},
+    Result, Settings, SETTINGS,
+};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser, Debug)]
-#[clap(name = env!("CARGO_PKG_NAME"), version = env!("CARGO_PKG_VERSION"), author = env!("CARGO_PKG_AUTHORS"), about = env!("CARGO_PKG_DESCRIPTION"), arg_required_else_help = true, verbatim_doc_comment)]
+#[clap(
+    name = env!("CARGO_PKG_NAME"),
+    version = env!("CARGO_PKG_VERSION"),
+    author = env!("CARGO_PKG_AUTHORS"),
+    about = env!("CARGO_PKG_DESCRIPTION"),
+    arg_required_else_help = true,
+    verbatim_doc_comment
+    )]
 struct Args {
     #[clap(subcommand)]
     subcommand: Subcommands,
@@ -21,9 +31,9 @@ enum Subcommands {
     /// Create symbolic links.
     Install,
     /// Restore files.
-    Restore { path: Vec<String> },
+    Restore { paths: Vec<String> },
     /// Create new repository.
-    New { path: Vec<String> },
+    New { paths: Vec<String> },
     /// Delete symbolic links.
     Uninstall,
 }
@@ -34,10 +44,10 @@ pub fn parse_args() -> Result<()> {
     match args.subcommand {
         Subcommands::Add => add(&Settings::read(SETTINGS)?, args.quiet, args.pretend)?,
         Subcommands::Install => install(&Settings::read(SETTINGS)?, args.quiet, args.pretend)?,
-        Subcommands::New { path } => new(&path, args.quiet, args.pretend)?,
-        Subcommands::Restore { path } => restore(
+        Subcommands::New { paths } => new(&paths, args.quiet, args.pretend)?,
+        Subcommands::Restore { paths } => restore(
             &mut Settings::read(SETTINGS)?,
-            &path,
+            &paths,
             args.quiet,
             args.pretend,
         )?,

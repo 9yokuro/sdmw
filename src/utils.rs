@@ -15,7 +15,7 @@ pub fn file_name<P: AsRef<Path>>(path: P) -> Result<String> {
         .unwrap())
 }
 
-pub fn show_already_exists_message<D: Display>(path: D) {
+pub fn print_already_exists<D: Display>(path: D) {
     eprintln!(
         "{}",
         AlreadyExists {
@@ -25,7 +25,7 @@ pub fn show_already_exists_message<D: Display>(path: D) {
     eprintln!("Skipped");
 }
 
-pub fn show_skip_deleting_symlink_message<D: Display>(path: D) {
+pub fn print_not_a_symlink<D: Display>(path: D) {
     eprintln!(
         "error: {}",
         NotASymlink {
@@ -58,8 +58,8 @@ pub fn remove<P: AsRef<Path>>(path: P) -> filey::Result<()> {
     Filey::new(path).absolutized()?.remove()
 }
 
-/// Move a file or a directory.
-pub fn mv<P: AsRef<Path>>(from: P, to: P) -> filey::Result<()> {
+/// Renames a file or a directory.
+pub fn rename<P: AsRef<Path>>(from: P, to: P) -> filey::Result<()> {
     Filey::new(from)
         .absolutized()?
         .move_to(Filey::new(to).absolutized()?)?;

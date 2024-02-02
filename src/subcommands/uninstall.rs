@@ -3,16 +3,16 @@ use colored::Colorize;
 use std::{fmt::Display, path::Path};
 
 pub fn uninstall(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
-    for i in settings.path() {
-        let symlink = &absolutize(i)?;
+    for path in settings.paths() {
+        let symlink = &absolutize(path)?;
 
         if !pretend && !Path::new(symlink).is_symlink() {
-            show_skip_deleting_symlink_message(symlink);
+            print_not_a_symlink(symlink);
             continue;
         }
 
         if pretend {
-            show_success_message(symlink);
+            print_log(symlink);
             continue;
         }
 
@@ -22,12 +22,12 @@ pub fn uninstall(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> 
         }
 
         if !quiet {
-            show_success_message(symlink);
+            print_log(symlink);
         }
     }
     Ok(())
 }
 
-fn show_success_message<D: Display>(path: D) {
+fn print_log<D: Display>(path: D) {
     eprintln!("{} symlink '{}'", "Deleted".green().bold(), path);
 }

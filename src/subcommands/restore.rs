@@ -4,29 +4,29 @@ use std::fmt::Display;
 
 pub fn restore(
     settings: &mut Settings,
-    path: &Vec<String>,
+    paths: &Vec<String>,
     quiet: bool,
     pretend: bool,
 ) -> Result<()> {
-    for p in path {
-        for q in settings.clone().path() {
-            let file_name = &file_name(q)?;
+    for path in paths {
+        for path_in_settings in settings.clone().paths() {
+            let file_name = &file_name(path_in_settings)?;
 
-            if absolutize(p)? == absolutize(file_name)? {
+            if absolutize(path)? == absolutize(file_name)? {
                 if pretend {
-                    show_success_message(file_name, q);
+                    print_log(file_name, path_in_settings);
                     continue;
                 }
 
-                if let Err(e) = mv(file_name, q) {
+                if let Err(e) = rename(file_name, path_in_settings) {
                     eprintln!("error: {e}");
                     continue;
                 }
 
-                settings.remove(q).write(SETTINGS)?;
+                settings.remove(path_in_settings).write(SETTINGS)?;
 
                 if !quiet {
-                    show_success_message(file_name, q);
+                    print_log(file_name, path_in_settings);
                 }
             }
         }
@@ -34,6 +34,6 @@ pub fn restore(
     Ok(())
 }
 
-fn show_success_message<D: Display>(from: D, to: D) {
+fn print_log<D: Display>(from: D, to: D) {
     eprintln!("{} '{}' -> '{}'", "Restored".green().bold(), from, to);
 }

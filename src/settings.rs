@@ -7,18 +7,18 @@ pub const SETTINGS: &str = "settings.json";
 /// Setting
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Settings {
-    path: Vec<String>,
+    paths: Vec<String>,
 }
 
 impl Settings {
     /// Constructs new Settings
     pub fn new(path: Vec<String>) -> Self {
-        Self { path }
+        Self { paths: path }
     }
 
-    /// Returns path.
-    pub fn path(&self) -> &Vec<String> {
-        &self.path
+    /// Returns paths.
+    pub fn paths(&self) -> &Vec<String> {
+        &self.paths
     }
 
     /// Reads a configuration file and Returns Settings.
@@ -30,7 +30,7 @@ impl Settings {
         Ok(sdmw)
     }
 
-    /// Write Settings to a configuration file.
+    /// Writes Settings to a configuration file.
     pub fn write<P: AsRef<Path>>(&self, path: P) -> Result<()> {
         serde_json::to_writer_pretty(
             File::create(path)
@@ -43,9 +43,9 @@ impl Settings {
         Ok(())
     }
 
-    /// Remove an element.
+    /// Removes an element.
     pub fn remove(&mut self, path: &String) -> &mut Self {
-        self.path.retain(|p| p != path);
+        self.paths.retain(|p| p != path);
         self
     }
 }
