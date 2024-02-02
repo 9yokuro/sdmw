@@ -1,11 +1,7 @@
-mod add;
-mod install;
-mod new;
 mod parse_args;
-mod restore;
 mod settings;
+mod subcommands;
 mod test;
-mod uninstall;
 mod utils;
 
 pub use crate::{
@@ -14,6 +10,7 @@ pub use crate::{
     new::new,
     restore::restore,
     settings::{Settings, SETTINGS},
+    subcommands::*,
     uninstall::uninstall,
 };
 
