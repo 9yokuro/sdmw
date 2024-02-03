@@ -72,12 +72,12 @@ fn test_add() {
     File::create("a.txt").unwrap();
     File::create("b.txt").unwrap();
 
-    let settings = Settings::new(vec!["../a.txt".to_string(), "../b.txt".to_string()]);
+    let mut settings = Settings::new(vec!["../a.txt".to_string(), "../b.txt".to_string()]);
     settings.write(SETTINGS).unwrap();
 
     set_current_dir(TEST_DIR).unwrap();
 
-    add(&settings, OPTIONS).unwrap();
+    add(&mut settings, None, OPTIONS).unwrap();
 
     assert!(Path::new("a.txt").exists());
     assert!(Path::new("b.txt").exists());
