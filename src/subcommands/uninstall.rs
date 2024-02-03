@@ -1,17 +1,17 @@
-use crate::{utils::*, Result, Settings};
+use crate::{utils::*, Options, Result, Settings};
 use colored::Colorize;
 use std::{fmt::Display, path::Path};
 
-pub fn uninstall(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
+pub fn uninstall(settings: &Settings, options: &Options) -> Result<()> {
     for path in settings.paths() {
         let symlink = &absolutize(path)?;
 
-        if !pretend && !Path::new(symlink).is_symlink() {
+        if !options.pretend() && !Path::new(symlink).is_symlink() {
             print_not_a_symlink(symlink);
             continue;
         }
 
-        if pretend {
+        if options.pretend() {
             print_log(symlink);
             continue;
         }
@@ -21,7 +21,7 @@ pub fn uninstall(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> 
             continue;
         }
 
-        if !quiet {
+        if !options.quiet() {
             print_log(symlink);
         }
     }

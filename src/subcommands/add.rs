@@ -1,16 +1,16 @@
-use crate::{utils::*, Result, Settings};
+use crate::{utils::*, Options, Result, Settings};
 use colored::Colorize;
 use std::{fmt::Display, path::Path};
 
-pub fn add(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
+pub fn add(settings: &Settings, options: &Options) -> Result<()> {
     for path in settings.paths() {
         let file_name = &file_name(path)?;
 
-        if !pretend && Path::new(file_name).exists() {
+        if !options.pretend() && Path::new(file_name).exists() {
             continue;
         }
 
-        if pretend {
+        if options.pretend() {
             print_log(path, file_name)?;
             continue;
         }
@@ -20,7 +20,7 @@ pub fn add(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
             continue;
         }
 
-        if !quiet {
+        if !options.quiet() {
             print_log(path, file_name)?;
         }
     }

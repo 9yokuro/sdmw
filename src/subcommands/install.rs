@@ -1,20 +1,14 @@
-use crate::{utils::*, Error::NotFound, Result, Settings};
+use crate::{utils::*, Error::NotFound, Options, Result, Settings};
 use colored::Colorize;
 use filey::{self, Filey};
 use std::{fmt::Display, path::Path};
 
-pub fn install(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
+pub fn install(settings: &Settings, options: &Options) -> Result<()> {
     for path in settings.paths() {
         let symlink = &absolutize(path)?;
-
-        if !pretend && Path::new(symlink).exists() {
-            print_already_exists(symlink);
-            continue;
-        }
-
         let original = &file_name(symlink)?;
 
-        if !pretend && !Path::new(&absolutize(original)?).exists() {
+        if !options.pretend() && !Path::new(&absolutize(original)?).exists() {
             eprintln!(
                 "error: {}",
                 NotFound {
@@ -24,7 +18,7 @@ pub fn install(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
             continue;
         }
 
-        if pretend {
+        if options.pretend() {
             print_log(original, symlink);
             continue;
         }
@@ -34,7 +28,7 @@ pub fn install(settings: &Settings, quiet: bool, pretend: bool) -> Result<()> {
             continue;
         }
 
-        if !quiet {
+        if !options.quiet() {
             print_log(original, symlink);
         }
     }

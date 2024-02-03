@@ -1,19 +1,20 @@
-mod parse_args;
+mod parse_arguments;
 mod settings;
 mod subcommands;
+#[cfg(test)]
 mod test;
 mod utils;
 
 pub use crate::{
+    parse_arguments::Options,
     settings::{Settings, SETTINGS},
-    subcommands::*,
 };
 
-use crate::parse_args::parse_args;
+use crate::parse_arguments::parse_arguments;
 use std::process::exit;
 
 fn main() {
-    if let Err(e) = parse_args() {
+    if let Err(e) = parse_arguments() {
         eprintln!("error: {}", e);
         exit(1);
     }

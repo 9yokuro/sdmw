@@ -1,4 +1,4 @@
-use crate::{Error::SdmwError, Result};
+use crate::{utils::*, Error::SdmwError, Result};
 use serde::{Deserialize, Serialize};
 use std::{fs::File, path::Path};
 
@@ -12,40 +12,45 @@ pub struct Settings {
 
 impl Settings {
     /// Constructs new Settings
-    pub fn new(path: Vec<String>) -> Self {
-        Self { paths: path }
+    pub const fn new(paths: Vec<String>) -> Self {
+        Self { paths }
     }
 
     /// Returns paths.
-    pub fn paths(&self) -> &Vec<String> {
+    pub const fn paths(&self) -> &Vec<String> {
         &self.paths
     }
 
     /// Reads a configuration file and Returns Settings.
     pub fn read<P: AsRef<Path>>(path: P) -> Result<Self> {
-        let sdmw =
-            serde_json::from_reader(File::open(path).map_err(|e| e.into()).map_err(SdmwError)?)
-                .map_err(|e| e.into())
-                .map_err(SdmwError)?;
+        let json = File::open(path).map_err(|e| e.into()).map_err(SdmwError)?;
+        let sdmw = serde_json::from_reader(json)
+            .map_err(|e| e.into())
+            .map_err(SdmwError)?;
         Ok(sdmw)
     }
 
-    /// Writes Settings to a configuration file.
+    /// Writes Settings to a file.
     pub fn write<P: AsRef<Path>>(&self, path: P) -> Result<()> {
-        serde_json::to_writer_pretty(
-            File::create(path)
-                .map_err(|e| e.into())
-                .map_err(SdmwError)?,
-            &self,
-        )
-        .map_err(|e| e.into())
-        .map_err(SdmwError)?;
+        let json = File::create(path)
+            .map_err(|e| e.into())
+            .map_err(SdmwError)?;
+        serde_json::to_writer_pretty(json, &self)
+            .map_err(|e| e.into())
+            .map_err(SdmwError)?;
         Ok(())
     }
 
     /// Removes an element.
-    pub fn remove(&mut self, path: &String) -> &mut Self {
-        self.paths.retain(|p| p != path);
+    pub fn remove<P: AsRef<Path>>(&mut self, path: P) -> &mut Self {
+        let target = &asref_path_to_string(path);
+        self.paths.retain(|p| p != target);
+        self
+    }
+
+    /// Adds an element.
+    pub fn add<P: AsRef<Path>>(&mut self, path: P) -> &mut Self {
+        self.paths.push(asref_path_to_string(path));
         self
     }
 }
