@@ -5,7 +5,7 @@ mod tests {
             add::add, install::install, new::new, restore::restore, uninstall::uninstall,
         },
         utils::*,
-        Settings,
+        Options, Settings,
     };
     use std::{
         env::set_current_dir,
@@ -16,6 +16,7 @@ mod tests {
 
     const TEST_DIR: &str = "testdir";
     const SETTINGS: &str = "testdir/settings.json";
+    const OPTIONS: &Options = &Options::new(false, false);
 
     fn prepare_test() {
         create_dir_all(TEST_DIR).unwrap();
@@ -58,7 +59,7 @@ mod tests {
 
         let test_repo = format!("{}/test_repo", TEST_DIR);
 
-        new(&vec![test_repo.clone()], false, false).unwrap();
+        new(&vec![test_repo.clone()], OPTIONS).unwrap();
 
         assert!(Path::new(&test_repo).exists());
         assert!(Path::new(&format!("{}/.git", &test_repo)).exists());
@@ -80,7 +81,7 @@ mod tests {
 
         set_current_dir(TEST_DIR).unwrap();
 
-        add(&settings, false, false).unwrap();
+        add(&settings, OPTIONS).unwrap();
 
         assert!(Path::new("a.txt").exists());
         assert!(Path::new("b.txt").exists());
@@ -102,7 +103,7 @@ mod tests {
         File::create("a.txt").unwrap();
         File::create("b.txt").unwrap();
 
-        install(&settings, false, false).unwrap();
+        install(&settings, OPTIONS).unwrap();
 
         set_current_dir("../").unwrap();
 
@@ -130,8 +131,7 @@ mod tests {
         restore(
             &mut settings,
             &vec!["a.txt".to_string(), "b.txt".to_string()],
-            false,
-            false,
+            OPTIONS,
         )
         .unwrap();
 
@@ -161,7 +161,7 @@ mod tests {
         symlink("a.txt", "../a.txt").unwrap();
         symlink("b.txt", "../b.txt").unwrap();
 
-        uninstall(&settings, false, false).unwrap();
+        uninstall(&settings, OPTIONS).unwrap();
 
         set_current_dir("../").unwrap();
 

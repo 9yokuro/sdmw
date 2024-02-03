@@ -7,22 +7,22 @@ use std::{env, fmt::Display, path::Path};
 
 /// Returns the file name.
 pub fn file_name<P: AsRef<Path>>(path: P) -> Result<String> {
-    Ok(Filey::new(path)
+    let file_name = Filey::new(path)
         .absolutized()
         .map_err(|e| e.into())
         .map_err(SdmwError)?
         .file_name()
-        .unwrap())
+        .unwrap();
+    Ok(file_name)
 }
 
 pub fn print_already_exists<D: Display>(path: D) {
     eprintln!(
-        "{}",
+        "error: {}",
         AlreadyExists {
             path: path.to_string()
         }
     );
-    eprintln!("Skipped");
 }
 
 pub fn print_not_a_symlink<D: Display>(path: D) {
@@ -32,36 +32,51 @@ pub fn print_not_a_symlink<D: Display>(path: D) {
             path: path.to_string()
         }
     );
-    eprintln!("Skipped");
 }
 
 /// Returns the current directory.
 pub fn current_dir() -> Result<String> {
-    Ok(env::current_dir()
+    let current_dir = env::current_dir()
         .map_err(|e| e.into())
-        .map_err(SdmwError)?
-        .to_string_lossy()
-        .to_string())
+        .map_err(SdmwError)?;
+    let current_dir_string = asref_path_to_string(current_dir);
+    Ok(current_dir_string)
 }
 
 /// Returns the absolute path.
 pub fn absolutize<P: AsRef<Path>>(path: P) -> Result<String> {
-    Ok(Filey::new(path)
+    let absolutized = Filey::new(path)
         .absolutized()
         .map_err(|e| e.into())
         .map_err(SdmwError)?
-        .to_string())
+        .to_string();
+    Ok(absolutized)
 }
 
 /// Removes a file or a directory.
-pub fn remove<P: AsRef<Path>>(path: P) -> filey::Result<()> {
-    Filey::new(path).absolutized()?.remove()
+pub fn remove<P: AsRef<Path>>(path: P) -> Result<()> {
+    Filey::new(path)
+        .absolutized()
+        .map_err(|e| e.into())
+        .map_err(SdmwError)?
+        .remove()
+        .map_err(|e| e.into())
+        .map_err(SdmwError)
 }
 
 /// Renames a file or a directory.
-pub fn rename<P: AsRef<Path>>(from: P, to: P) -> filey::Result<()> {
+pub fn rename<P: AsRef<Path>>(from: P, to: P) -> Result<()> {
+    let path = absolutize(to)?;
     Filey::new(from)
-        .absolutized()?
-        .move_to(Filey::new(to).absolutized()?)?;
+        .absolutized()
+        .map_err(|e| e.into())
+        .map_err(SdmwError)?
+        .move_to(path)
+        .map_err(|e| e.into())
+        .map_err(SdmwError)?;
     Ok(())
+}
+
+pub fn asref_path_to_string<P: AsRef<Path>>(path: P) -> String {
+    path.as_ref().to_string_lossy().to_string()
 }

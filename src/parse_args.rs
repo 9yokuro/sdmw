@@ -1,7 +1,4 @@
-use crate::{
-    subcommands::{add::add, install::install, new::new, restore::restore, uninstall::uninstall},
-    Result, Settings, SETTINGS,
-};
+use crate::{subcommands, Result, Settings, SETTINGS};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser, Debug)]
@@ -12,8 +9,8 @@ use clap::{Parser, Subcommand};
     about = env!("CARGO_PKG_DESCRIPTION"),
     arg_required_else_help = true,
     verbatim_doc_comment
-    )]
-struct Args {
+)]
+struct Arguments {
     #[clap(subcommand)]
     subcommand: Subcommands,
     /// Do not print log messages.
@@ -38,20 +35,53 @@ enum Subcommands {
     Uninstall,
 }
 
-pub fn parse_args() -> Result<()> {
-    let args = Args::parse();
+/// Command line options.
+#[derive(Debug)]
+pub struct Options {
+    quiet: bool,
+    pretend: bool,
+}
 
-    match args.subcommand {
-        Subcommands::Add => add(&Settings::read(SETTINGS)?, args.quiet, args.pretend)?,
-        Subcommands::Install => install(&Settings::read(SETTINGS)?, args.quiet, args.pretend)?,
-        Subcommands::New { paths } => new(&paths, args.quiet, args.pretend)?,
-        Subcommands::Restore { paths } => restore(
-            &mut Settings::read(SETTINGS)?,
-            &paths,
-            args.quiet,
-            args.pretend,
-        )?,
-        Subcommands::Uninstall => uninstall(&Settings::read(SETTINGS)?, args.quiet, args.pretend)?,
+impl Options {
+    /// Constructs new Options.
+    pub const fn new(quiet: bool, pretend: bool) -> Self {
+        Self { quiet, pretend }
+    }
+
+    /// Returns quiet.
+    pub const fn quiet(&self) -> bool {
+        self.quiet
+    }
+
+    /// Returns pretend.
+    pub const fn pretend(&self) -> bool {
+        self.pretend
+    }
+}
+
+pub fn parse_arguments() -> Result<()> {
+    let arguments = Arguments::parse();
+
+    let options = Options::new(arguments.quiet, arguments.pretend);
+
+    match arguments.subcommand {
+        Subcommands::Add => {
+            let settings = Settings::read(SETTINGS)?;
+            subcommands::add(&settings, &options)?
+        }
+        Subcommands::Install => {
+            let settings = Settings::read(SETTINGS)?;
+            subcommands::install(&settings, &options)?
+        }
+        Subcommands::New { paths } => subcommands::new(&paths, &options)?,
+        Subcommands::Restore { paths } => {
+            let mut settings = Settings::read(SETTINGS)?;
+            subcommands::restore(&mut settings, &paths, &options)?
+        }
+        Subcommands::Uninstall => {
+            let settings = Settings::read(SETTINGS)?;
+            subcommands::uninstall(&settings, &options)?
+        }
     }
     Ok(())
 }

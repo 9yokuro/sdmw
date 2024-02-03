@@ -1,4 +1,4 @@
-use crate::{utils::*, Result, Settings, SETTINGS};
+use crate::{utils::*, Options, Result, Settings, SETTINGS};
 use colored::Colorize;
 use std::{
     ffi::OsStr,
@@ -9,35 +9,38 @@ use std::{
     process::{Command, Stdio},
 };
 
-pub fn new(paths: &Vec<String>, quiet: bool, pretend: bool) -> Result<()> {
+const README: &str = "README.md";
+
+pub fn new(paths: &Vec<String>, options: &Options) -> Result<()> {
     for path in paths {
-        if !pretend && Path::new(path).exists() {
+        if !options.pretend() && Path::new(path).exists() {
             print_already_exists(path);
             continue;
         }
 
-        if pretend {
-            print_git_log(path);
+        let message = &format!("repository '{}'", path);
+        if options.pretend() {
+            print_log(message);
         } else if let Err(e) = create_git_repository(path) {
             eprintln!("error: {}", e);
-        } else if !quiet {
-            print_git_log(path);
+        } else if !options.quiet() {
+            print_log(message);
         }
 
-        if pretend {
-            print_create_file_log(format!("{}/{}", path, SETTINGS));
+        if options.pretend() {
+            print_log(path_to_settings(path));
         } else if let Err(e) = create_settings(path) {
             eprintln!("error: {}", e);
-        } else if !quiet {
-            print_create_file_log(format!("{}/{}", path, SETTINGS));
+        } else if !options.quiet() {
+            print_log(path_to_settings(path));
         }
 
-        if pretend {
-            print_create_file_log(format!("{}/README.md", path));
+        if options.pretend() {
+            print_log(path_to_readme(path));
         } else if let Err(e) = create_readme(path) {
             eprintln!("error: {}", e);
-        } else if !quiet {
-            print_create_file_log(format!("{}/README.md", path));
+        } else if !options.quiet() {
+            print_log(path_to_readme(path));
         }
     }
     Ok(())
@@ -55,23 +58,26 @@ fn create_git_repository<O: AsRef<OsStr>>(path: O) -> io::Result<()> {
     Ok(())
 }
 
-fn print_git_log<D: Display>(path: D) {
-    eprintln!("{} repository '{}'", "Created".green().bold(), path);
+fn create_settings<P: AsRef<Path>>(path: P) -> Result<()> {
+    Settings::new(vec![]).write(path_to_settings(path))
 }
 
-fn create_settings<P: AsRef<Path>>(path: P) -> Result<()> {
-    Settings::new(vec![]).write(format!("{}/{}", path.as_ref().to_string_lossy(), SETTINGS))
+fn path_to_settings<P: AsRef<Path>>(path: P) -> String {
+    let pathbuf = path.as_ref().join(SETTINGS);
+    asref_path_to_string(pathbuf)
 }
 
 fn create_readme<P: AsRef<Path>>(path: P) -> io::Result<()> {
-    BufWriter::new(File::create(format!(
-        "{}/README.md",
-        path.as_ref().to_string_lossy()
-    ))?)
-    .write_all(b"# dotfiles")?;
+    let readme = File::create(path_to_readme(path))?;
+    BufWriter::new(readme).write_all(b"# dotfiles")?;
     Ok(())
 }
 
-fn print_create_file_log<D: Display>(path: D) {
+fn path_to_readme<P: AsRef<Path>>(path: P) -> String {
+    let pathbuf = path.as_ref().join(README);
+    asref_path_to_string(pathbuf)
+}
+
+fn print_log<D: Display>(path: D) {
     eprintln!("{} {}", "Created".green().bold(), path);
 }

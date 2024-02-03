@@ -1,19 +1,14 @@
-use crate::{utils::*, Result, Settings, SETTINGS};
+use crate::{utils::*, Options, Result, Settings, SETTINGS};
 use colored::Colorize;
 use std::fmt::Display;
 
-pub fn restore(
-    settings: &mut Settings,
-    paths: &Vec<String>,
-    quiet: bool,
-    pretend: bool,
-) -> Result<()> {
+pub fn restore(settings: &mut Settings, paths: &Vec<String>, options: &Options) -> Result<()> {
     for path in paths {
         for path_in_settings in settings.clone().paths() {
             let file_name = &file_name(path_in_settings)?;
 
             if absolutize(path)? == absolutize(file_name)? {
-                if pretend {
+                if options.pretend() {
                     print_log(file_name, path_in_settings);
                     continue;
                 }
@@ -25,7 +20,7 @@ pub fn restore(
 
                 settings.remove(path_in_settings).write(SETTINGS)?;
 
-                if !quiet {
+                if !options.quiet() {
                     print_log(file_name, path_in_settings);
                 }
             }
