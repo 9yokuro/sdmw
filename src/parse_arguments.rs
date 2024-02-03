@@ -24,7 +24,7 @@ struct Arguments {
 #[derive(Subcommand, Debug)]
 enum Subcommands {
     /// Add files to a repository.
-    Add,
+    Add { paths: Option<Vec<String>> },
     /// Create symbolic links.
     Install,
     /// Restore files.
@@ -65,9 +65,9 @@ pub fn parse_arguments() -> Result<()> {
     let options = Options::new(arguments.quiet, arguments.pretend);
 
     match arguments.subcommand {
-        Subcommands::Add => {
-            let settings = Settings::read(SETTINGS)?;
-            subcommands::add(&settings, &options)?
+        Subcommands::Add { paths } => {
+            let mut settings = Settings::read(SETTINGS)?;
+            subcommands::add(&mut settings, paths.as_ref(), &options)?
         }
         Subcommands::Install => {
             let settings = Settings::read(SETTINGS)?;

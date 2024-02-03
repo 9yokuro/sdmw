@@ -34,13 +34,17 @@ sdmw new /path/to/repository && cd /path/to/repository
     ]
 }
 ```
-
-03. Add files to repository:
+And run:
 ```
 sdmw add
 ```
 
-04. Install:
+Alternatively:
+```
+sdmw add ~/.config/alacritty ~/.zshrc
+```
+
+03. Install:
 Create symbolic links.
 ```
 sdmw install
