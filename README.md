@@ -9,7 +9,7 @@ Changed behavior of a subcommand `add`
 
 ## Requirements
 - Unix-like operating system
-- installed `git`
+- `git`
 
 ## Installation
 Run the following Cargo command:
