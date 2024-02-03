@@ -1,15 +1,16 @@
-mod parse_args;
+mod parse_arguments;
 mod settings;
 mod subcommands;
+#[cfg(test)]
 mod test;
 mod utils;
 
 pub use crate::{
-    parse_args::Options,
+    parse_arguments::Options,
     settings::{Settings, SETTINGS},
 };
 
-use crate::parse_args::parse_arguments;
+use crate::parse_arguments::parse_arguments;
 use std::process::exit;
 
 fn main() {
