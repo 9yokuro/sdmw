@@ -4,8 +4,8 @@
 ![workflow_test](https://github.com/p1486/sdmw/actions/workflows/test.yml/badge.svg)
 ![Crates.io Version](https://img.shields.io/crates/v/sdmw)
 
-## v0.3.0
-Add a new subcommand "restore".
+## v0.4.0
+Changed behavior of a subcommand `add`
 
 ## Requirements
 - Unix-like operating system
@@ -20,12 +20,12 @@ Or download prebuilt binary from the [GitHub release page](https://github.com/p1
 
 ## Usage
 
-01. Create a new repository:
+1. Create a new repository:
 ```
 sdmw new /path/to/repository && cd /path/to/repository
 ```
 
-02. Edit `settings.json`:
+2. Edit `settings.json`:
 ```diff
 {
     "path": [
@@ -38,13 +38,12 @@ And run:
 ```
 sdmw add
 ```
-
 Alternatively:
 ```
 sdmw add ~/.config/alacritty ~/.zshrc
 ```
 
-03. Install:
+3. Install:
 Create symbolic links.
 ```
 sdmw install
@@ -62,4 +61,18 @@ cd /path/to/repository && sdmw restore alacritty/
 - `-V`, `--version` - Print version.
 
 ## License
-This project is licensed under the MIT License and the Apache-2.0 license.
+
+Licensed under either of
+
+ * Apache License, Version 2.0
+   ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+ * MIT license
+   ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
+
+## Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
+dual licensed as above, without any additional terms or conditions.
