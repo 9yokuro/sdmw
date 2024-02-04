@@ -1,4 +1,6 @@
-use crate::{utils::*, Error::SdmwError, Options, Result, Settings, SETTINGS};
+use crate::{
+    pretend, print_log, rename, utils::*, Error::SdmwError, Options, Result, Settings, SETTINGS,
+};
 use colored::Colorize;
 use filey::Filey;
 use std::{fmt::Display, path::Path};
@@ -20,19 +22,11 @@ fn add_statically(settings: &Settings, options: &Options) -> Result<()> {
             continue;
         }
 
-        if options.pretend() {
-            print_log(path, file_name)?;
-            continue;
-        }
+        pretend!(options, path, file_name);
 
-        if let Err(e) = rename(path, &current_dir()?) {
-            eprintln!("error: {}", e);
-            continue;
-        }
+        rename!(path, &current_dir()?);
 
-        if !options.quiet() {
-            print_log(path, file_name)?;
-        }
+        print_log!(options, path, file_name);
     }
     Ok(())
 }
@@ -41,23 +35,44 @@ fn add_dynamically(settings: &mut Settings, paths: &Vec<String>, options: &Optio
     for path in paths {
         let file_name = &file_name(path)?;
 
-        if options.pretend() {
-            print_log(path, file_name)?;
-            continue;
-        }
+        pretend!(options, path, file_name);
 
-        if let Err(e) = rename(path, &current_dir()?) {
-            eprintln!("error: {}", e);
-            continue;
-        }
+        rename!(path, &current_dir()?);
 
         settings.add(format_path(path)?).write(SETTINGS)?;
 
-        if !options.quiet() {
-            print_log(path, file_name)?;
-        }
+        print_log!(options, path, file_name);
     }
     Ok(())
+}
+
+#[macro_export]
+macro_rules! pretend {
+    ($options:expr, $from:expr, $to:expr) => {
+        if $options.pretend() {
+            print_log($from, $to)?;
+            continue;
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! print_log {
+    ($options:expr, $from:expr, $to:expr) => {
+        if !$options.quiet() {
+            print_log($from, $to)?;
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! rename {
+    ($from:expr, $to:expr) => {
+        if let Err(e) = rename($from, $to) {
+            eprintln!("error: {}", e);
+            continue;
+        }
+    };
 }
 
 fn format_path<P: AsRef<Path>>(path: P) -> Result<String> {
