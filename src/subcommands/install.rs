@@ -37,8 +37,8 @@ pub fn install(settings: &Settings, options: &Options) -> Result<()> {
 
 fn create_symlink<P: AsRef<Path>>(original: P, symlink: P) -> filey::Result<()> {
     Filey::new(original)
-        .absolutized()?
-        .symlink(Filey::new(symlink).absolutized()?)
+        .absolutize()?
+        .symlink(Filey::new(symlink).absolutize()?)
 }
 
 fn print_log<D: Display>(original: D, symlink: D) {

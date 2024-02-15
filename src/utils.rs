@@ -8,7 +8,7 @@ use std::{env, fmt::Display, path::Path};
 /// Returns the file name.
 pub fn file_name<P: AsRef<Path>>(path: P) -> Result<String> {
     let file_name = Filey::new(path)
-        .absolutized()
+        .absolutize()
         .map_err(|e| e.into())
         .map_err(SdmwError)?
         .file_name()
@@ -46,7 +46,10 @@ pub fn current_dir() -> Result<String> {
 /// Returns the absolute path.
 pub fn absolutize<P: AsRef<Path>>(path: P) -> Result<String> {
     let absolutized = Filey::new(path)
-        .absolutized()
+        .expand_user()
+        .map_err(|e| e.into())
+        .map_err(SdmwError)?
+        .absolutize()
         .map_err(|e| e.into())
         .map_err(SdmwError)?
         .to_string();
@@ -56,7 +59,7 @@ pub fn absolutize<P: AsRef<Path>>(path: P) -> Result<String> {
 /// Removes a file or a directory.
 pub fn remove<P: AsRef<Path>>(path: P) -> Result<()> {
     Filey::new(path)
-        .absolutized()
+        .absolutize()
         .map_err(|e| e.into())
         .map_err(SdmwError)?
         .remove()
@@ -68,7 +71,7 @@ pub fn remove<P: AsRef<Path>>(path: P) -> Result<()> {
 pub fn rename<P: AsRef<Path>>(from: P, to: P) -> Result<()> {
     let path = absolutize(to)?;
     Filey::new(from)
-        .absolutized()
+        .absolutize()
         .map_err(|e| e.into())
         .map_err(SdmwError)?
         .move_to(path)

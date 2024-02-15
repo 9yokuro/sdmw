@@ -77,10 +77,10 @@ macro_rules! rename {
 
 fn format_path<P: AsRef<Path>>(path: P) -> Result<String> {
     let filey = Filey::new(path)
-        .absolutized()
+        .absolutize()
         .map_err(|e| e.into())
         .map_err(SdmwError)?
-        .close_user()
+        .contract_user()
         .map_err(|e| e.into())
         .map_err(SdmwError)?
         .to_string();
